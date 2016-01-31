@@ -1,10 +1,13 @@
+import os
+os.environ['SDL_VIDEO_WINDOW_POS'] = "%d,%d" % (100,25)
+
 import pygame
 from pygame.locals import *
 import fire
 import numpy as np
 from random import randint
 from numpy.random import uniform, randn
-import os
+import matrixes as mtx
 
 TILE_W = 17
 TILE_H = 23
@@ -35,6 +38,7 @@ class Map:
 
     def update(self, temp_array, fuel_array):
         """update the map"""
+        print(fuel_array)
         temp = []
         for i in range(len(temp_array)):
             temp_row = []
@@ -57,7 +61,7 @@ class Map:
         self.temp_array = temp_array
         self.fuel_array = fuel_array
         # redraw the screen
-        print(self.difference_array)
+
         self.draw()
 
     def draw(self):
@@ -82,8 +86,9 @@ def main():
     """The function that runs it all"""
     # Initialise screen
     pygame.init()
-    w = 700
-    h = 825
+    w = 600
+    #h = 740
+    h = 810
     size = (w, h)
     screen = pygame.display.set_mode(size)
     pygame.display.set_caption('Fire')
@@ -93,28 +98,19 @@ def main():
     screen.blit(background, (0, 0))
     pygame.display.flip()
 
-    # create temperature and fuel arrays
-    temp_arr = uniform(0, 2000, size=(35, 35))
-    fuel_arr = np.ones((len(temp_arr), len(temp_arr)))
+    temp_arr = mtx.temp_arr4
+    fuel_arr = 2*np.ones((len(temp_arr), len(temp_arr)))
 
-    # temp_arr = np.array([[131.25, 262.5, 131.25, 262.5, 131.25],
-    #                  [262.5, 525, 1050, 525, 262.5],
-    #                  [131.25, 1050, 2100, 1050, 131.25],
-    #                  [262.5, 525, 1050, 525, 262.5],
-    #                  [131.25, 262.5, 131.25, 262.5, 131.25]])
-    #
-    # temp_arr = np.pad(temp_arr, (15, 15), 'edge')
-    # fuel_arr = np.ones((len(temp_arr), len(temp_arr)))
 
     # run the first iteration of the fire simulation
-    sim = Map(screen, 1500, temp_arr, fuel_arr)
+    sim = Map(screen, 572, temp_arr, fuel_arr)
 
     # Event loop
     while 1:
         # run the simulation over time
-        temp_arr = fire.calcTemp(temp_arr, fuel_arr, .01, 5, .2, 5000, der_func=fire.dTdt, h=1)
+        temp_arr = fire.calcTemp(temp_arr, fuel_arr, .05, 5, .1, 5000, der_func=fire.dTdt, h=1)
         fuel_arr = fire.calcFuel(temp_arr, fuel_arr, .01, 15)
-        pygame.time.wait(1000)
+        pygame.time.wait(250)
         sim.update(temp_arr, fuel_arr)
         for event in pygame.event.get():
             if event.type == QUIT:

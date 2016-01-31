@@ -14,9 +14,9 @@ FUEL_ARR = np.array([])
 # V - float - amount of fuel in the cell
 # returns - int - will return 1 if there is combustion, 0 if not
 def R(T, V):
-    if T < 100:
+    if T < 572:
         return 0
-    if V == 0:
+    if V <= 0:
         return 0
     else:
         return 1
@@ -31,7 +31,7 @@ def R(T, V):
 def dTdt(temp_arr, fuel_arr, kappa, k, delta, h=1):
     # pad the outside of the array with
     temp_arr = np.pad(temp_arr, (1, 1), 'edge')
-    fuel_arr = np.pad(temp_arr, (1, 1), 'constant')
+    # fuel_arr = np.pad(temp_arr, (1, 1), 'constant')
     new_arr = []
     rows = range(1, len(temp_arr) - 1)
     cols = range(1, len(temp_arr[0]) - 1)
@@ -43,7 +43,7 @@ def dTdt(temp_arr, fuel_arr, kappa, k, delta, h=1):
             temp_arr[i + 1][j] - 4 * temp_arr[i][j] + temp_arr[i - 1][j] + temp_arr[i][j + 1] + temp_arr[i][
                 j - 1])  # Spreading
             T -= k * temp_arr[i][j]  # Cooling
-            T += delta * R(T, fuel_arr[i][j])  # Combustion
+            T += delta * R(temp_arr[i][j], fuel_arr[i-1][j-1])  # Combustion
             new_row.append(T)
         new_arr.append(new_row)
     return np.array(new_arr)
