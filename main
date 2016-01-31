@@ -42,9 +42,12 @@ class Map:
                 # if the location has all ready started cooling keep its difference at 1
                 if self.difference_array[i][j] == 1:
                     temp_row.append(1)
-                # if the location is cooling change difference to 1
-                elif temp_array[i][j] < self.FIRE and temp_array[i][j] - self.temp_array[i][j] < 0:
-                    temp_row.append(1)
+                elif self.temp_array[i][j] >= self.FIRE:
+                    # if the location is cooling change difference to 1
+                    if temp_array[i][j] < self.FIRE:
+                        temp_row.append(1)
+                    else:
+                        temp_row.append(0)
                 else:
                     temp_row.append(0)
 
@@ -54,6 +57,7 @@ class Map:
         self.temp_array = temp_array
         self.fuel_array = fuel_array
         # redraw the screen
+        print(self.difference_array)
         self.draw()
 
     def draw(self):
@@ -79,7 +83,7 @@ def main():
     # Initialise screen
     pygame.init()
     w = 700
-    h = 800
+    h = 825
     size = (w, h)
     screen = pygame.display.set_mode(size)
     pygame.display.set_caption('Fire')
@@ -92,6 +96,15 @@ def main():
     # create temperature and fuel arrays
     temp_arr = uniform(0, 2000, size=(35, 35))
     fuel_arr = np.ones((len(temp_arr), len(temp_arr)))
+
+    # temp_arr = np.array([[131.25, 262.5, 131.25, 262.5, 131.25],
+    #                  [262.5, 525, 1050, 525, 262.5],
+    #                  [131.25, 1050, 2100, 1050, 131.25],
+    #                  [262.5, 525, 1050, 525, 262.5],
+    #                  [131.25, 262.5, 131.25, 262.5, 131.25]])
+    #
+    # temp_arr = np.pad(temp_arr, (15, 15), 'edge')
+    # fuel_arr = np.ones((len(temp_arr), len(temp_arr)))
 
     # run the first iteration of the fire simulation
     sim = Map(screen, 1500, temp_arr, fuel_arr)
