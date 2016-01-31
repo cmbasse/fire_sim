@@ -38,7 +38,7 @@ class Map:
 
     def update(self, temp_array, fuel_array):
         """update the map"""
-        print(fuel_array)
+
         temp = []
         for i in range(len(temp_array)):
             temp_row = []
@@ -98,9 +98,8 @@ def main():
     screen.blit(background, (0, 0))
     pygame.display.flip()
 
-    temp_arr = mtx.temp_arr4
+    temp_arr = mtx.temp_arr1
     fuel_arr = 2*np.ones((len(temp_arr), len(temp_arr)))
-
 
     # run the first iteration of the fire simulation
     sim = Map(screen, 572, temp_arr, fuel_arr)
@@ -108,9 +107,9 @@ def main():
     # Event loop
     while 1:
         # run the simulation over time
-        temp_arr = fire.calcTemp(temp_arr, fuel_arr, .05, 5, .1, 5000, der_func=fire.dTdt, h=1)
+        temp_arr = fire.calcTemp(temp_arr, fuel_arr, .05, 5, .1, 5000, 110, der_func=fire.dTdt, h=1)
         fuel_arr = fire.calcFuel(temp_arr, fuel_arr, .01, 15)
-        pygame.time.wait(250)
+        # pygame.time.wait(10)
         sim.update(temp_arr, fuel_arr)
         for event in pygame.event.get():
             if event.type == QUIT:
