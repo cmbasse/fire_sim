@@ -1,1 +1,1 @@
-# Fire simulation
+# Visualization of our fire simulation
